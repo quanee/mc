@@ -1,18 +1,40 @@
 package token
 
-// Token 类型
+import "fmt"
+
+// Token type
 type TokenType int
 
 const (
-	Integer TokenType = iota
+	Number TokenType = iota
+	Variable
 	Plus
 	Minus
 	Multiply
 	Divide
 )
 
-// Token 结构
+// Token define
 type Token struct {
 	Type  TokenType
 	Value string
+}
+
+func (typ TokenType) String() string {
+	switch typ {
+	case Number:
+		return "[Toke Type] Number"
+	case Variable:
+		return "[Toke Type] Variable"
+	case Plus:
+		return "[Toke Type] Plus"
+	case Minus:
+		return "[Toke Type] Minus"
+	case Multiply:
+		return "[Toke Type] Multiply"
+	case Divide:
+		return "[Toke Type] Divide"
+	default:
+		return fmt.Sprintf("unknow %d", typ)
+	}
 }

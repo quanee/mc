@@ -21,6 +21,7 @@ func main() {
 		return
 	}
 
+	fmt.Printf("%#v", astree)
 	result := ast.EvaluateASTWithPriority(astree)
 	fmt.Printf("expression result: %f\n", result)
 }

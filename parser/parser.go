@@ -17,7 +17,7 @@ func NewParser() Parser {
 	return Parser{tokens: make([]token.Token, 0)}
 }
 
-// 解析表达式为 Token 列表
+// parse expression to Token list
 func (p *Parser) ParseExpression(expression string) error {
 	expression = strings.ReplaceAll(expression, " ", "") // 移除空格
 
@@ -30,7 +30,7 @@ func (p *Parser) ParseExpression(expression string) error {
 			for i < len(expression) && (expression[i] >= '0' && expression[i] <= '9' || expression[i] == '.') {
 				i++
 			}
-			p.tokens = append(p.tokens, token.Token{token.Integer, expression[start:i]})
+			p.tokens = append(p.tokens, token.Token{token.Number, expression[start:i]})
 			i--
 		case char == '+':
 			p.tokens = append(p.tokens, token.Token{token.Plus, "+"})
@@ -91,7 +91,7 @@ func (p *Parser) parseTerm() (*ast.Node, error) {
 	tok := p.tokens[0]
 	p.tokens = p.tokens[1:]
 
-	if tok.Type == token.Integer {
+	if tok.Type == token.Number {
 		value, err := strconv.ParseFloat(tok.Value, 64)
 		if err != nil {
 			return nil, err
