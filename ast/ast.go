@@ -1,6 +1,10 @@
-package main
+package ast
 
-import "fmt"
+import (
+	"fmt"
+
+	"mc/token"
+)
 
 // AST 节点类型
 type NodeType int
@@ -19,7 +23,7 @@ type Node struct {
 
 	// 如果节点类型为 BinaryOperation
 	Left     *Node
-	Operator TokenType
+	Operator token.TokenType
 	Right    *Node
 }
 
@@ -37,13 +41,13 @@ func evaluateAST(node *Node) float64 {
 	rightValue := evaluateAST(node.Right)
 
 	switch node.Operator {
-	case Plus:
+	case token.Plus:
 		return leftValue + rightValue
-	case Minus:
+	case token.Minus:
 		return leftValue - rightValue
-	case Multiply:
+	case token.Multiply:
 		return leftValue * rightValue
-	case Divide:
+	case token.Divide:
 		if rightValue == 0.0 {
 			// 处理除零错误
 			fmt.Println("除零错误")
@@ -58,7 +62,7 @@ func evaluateAST(node *Node) float64 {
 }
 
 // 添加运算符优先级
-func evaluateASTWithPriority(node *Node) float64 {
+func EvaluateASTWithPriority(node *Node) float64 {
 	if node == nil {
 		return 0.0
 	}
@@ -70,14 +74,14 @@ func evaluateASTWithPriority(node *Node) float64 {
 
 	//fmt.Println(node.Operator)
 	// 首先处理乘法和除法
-	if node.Operator == Multiply || node.Operator == Divide {
-		leftValue := evaluateASTWithPriority(node.Left)
-		rightValue := evaluateASTWithPriority(node.Right)
+	if node.Operator == token.Multiply || node.Operator == token.Divide {
+		leftValue := EvaluateASTWithPriority(node.Left)
+		rightValue := EvaluateASTWithPriority(node.Right)
 
 		switch node.Operator {
-		case Multiply:
+		case token.Multiply:
 			return leftValue * rightValue
-		case Divide:
+		case token.Divide:
 			if rightValue == 0.0 {
 				// 处理除零错误
 				fmt.Println("除零错误")
@@ -88,14 +92,14 @@ func evaluateASTWithPriority(node *Node) float64 {
 	}
 
 	// 处理加法和减法
-	if node.Operator == Plus || node.Operator == Minus {
-		leftValue := evaluateASTWithPriority(node.Left)
-		rightValue := evaluateASTWithPriority(node.Right)
+	if node.Operator == token.Plus || node.Operator == token.Minus {
+		leftValue := EvaluateASTWithPriority(node.Left)
+		rightValue := EvaluateASTWithPriority(node.Right)
 
 		switch node.Operator {
-		case Plus:
+		case token.Plus:
 			return leftValue + rightValue
-		case Minus:
+		case token.Minus:
 			return leftValue - rightValue
 		}
 	}

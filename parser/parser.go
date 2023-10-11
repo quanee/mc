@@ -1,21 +1,24 @@
-package main
+package parser
 
 import (
 	"fmt"
 	"strconv"
 	"strings"
+
+	"mc/ast"
+	"mc/token"
 )
 
 type Parser struct {
-	tokens []Token
+	tokens []token.Token
 }
 
 func NewParser() Parser {
-	return Parser{tokens: make([]Token, 0)}
+	return Parser{tokens: make([]token.Token, 0)}
 }
 
 // 解析表达式为 Token 列表
-func (p *Parser) parseExpression(expression string) error {
+func (p *Parser) ParseExpression(expression string) error {
 	expression = strings.ReplaceAll(expression, " ", "") // 移除空格
 
 	for i := 0; i < len(expression); i++ {
@@ -27,16 +30,16 @@ func (p *Parser) parseExpression(expression string) error {
 			for i < len(expression) && (expression[i] >= '0' && expression[i] <= '9' || expression[i] == '.') {
 				i++
 			}
-			p.tokens = append(p.tokens, Token{Integer, expression[start:i]})
+			p.tokens = append(p.tokens, token.Token{token.Integer, expression[start:i]})
 			i--
 		case char == '+':
-			p.tokens = append(p.tokens, Token{Plus, "+"})
+			p.tokens = append(p.tokens, token.Token{token.Plus, "+"})
 		case char == '-':
-			p.tokens = append(p.tokens, Token{Minus, "-"})
+			p.tokens = append(p.tokens, token.Token{token.Minus, "-"})
 		case char == '*':
-			p.tokens = append(p.tokens, Token{Multiply, "*"})
+			p.tokens = append(p.tokens, token.Token{token.Multiply, "*"})
 		case char == '/':
-			p.tokens = append(p.tokens, Token{Divide, "/"})
+			p.tokens = append(p.tokens, token.Token{token.Divide, "/"})
 		}
 	}
 
@@ -44,11 +47,11 @@ func (p *Parser) parseExpression(expression string) error {
 }
 
 // build AST
-func (p *Parser) buildAST() (*Node, error) {
+func (p *Parser) BuildAST() (*ast.Node, error) {
 	return p.parseExpressionRecursive()
 }
 
-func (p *Parser) parseExpressionRecursive() (*Node, error) {
+func (p *Parser) parseExpressionRecursive() (*ast.Node, error) {
 	if len(p.tokens) == 0 {
 		return nil, nil
 	}
@@ -69,8 +72,8 @@ func (p *Parser) parseExpressionRecursive() (*Node, error) {
 			return nil, err
 		}
 
-		node = &Node{
-			Type:     BinaryOperation,
+		node = &ast.Node{
+			Type:     ast.BinaryOperation,
 			Left:     node,
 			Operator: operator.Type,
 			Right:    rightNode,
@@ -80,36 +83,36 @@ func (p *Parser) parseExpressionRecursive() (*Node, error) {
 	return node, nil
 }
 
-func (p *Parser) parseTerm() (*Node, error) {
+func (p *Parser) parseTerm() (*ast.Node, error) {
 	if len(p.tokens) == 0 {
 		return nil, nil
 	}
 
-	token := p.tokens[0]
+	tok := p.tokens[0]
 	p.tokens = p.tokens[1:]
 
-	if token.Type == Integer {
-		value, err := strconv.ParseFloat(token.Value, 64)
+	if tok.Type == token.Integer {
+		value, err := strconv.ParseFloat(tok.Value, 64)
 		if err != nil {
 			return nil, err
 		}
-		return &Node{Type: Number, Value: value}, nil
+		return &ast.Node{Type: ast.Number, Value: value}, nil
 	}
 
 	return nil, fmt.Errorf("invalid express")
 }
 
-func (p *Parser) parseBinaryOperator() (Token, error) {
+func (p *Parser) parseBinaryOperator() (token.Token, error) {
 	if len(p.tokens) == 0 {
-		return Token{}, fmt.Errorf("unexcepted EOF")
+		return token.Token{}, fmt.Errorf("unexcepted EOF")
 	}
 
-	token := p.tokens[0]
+	tok := p.tokens[0]
 	p.tokens = p.tokens[1:]
 
-	if token.Type == Plus || token.Type == Minus || token.Type == Multiply || token.Type == Divide {
-		return token, nil
+	if tok.Type == token.Plus || tok.Type == token.Minus || tok.Type == token.Multiply || tok.Type == token.Divide {
+		return tok, nil
 	}
 
-	return Token{}, fmt.Errorf("unexcepted operator: %v", token.Type)
+	return token.Token{}, fmt.Errorf("unexcepted operator: %v", tok.Type)
 }

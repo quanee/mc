@@ -1,4 +1,4 @@
-package main
+package token
 
 // Token 类型
 type TokenType int
