@@ -8,6 +8,7 @@ type TokenType int
 const (
 	Number TokenType = iota
 	Variable
+	String
 	Plus
 	Minus
 	Multiply
