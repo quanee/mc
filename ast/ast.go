@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"mc/token"
+	"mc/vm"
 )
 
 // AST 节点类型
@@ -28,50 +29,63 @@ type Node struct {
 }
 
 // add operator priority
-func EvaluateASTWithPriority(node *Node) float64 {
-	if node == nil {
-		return 0.0
+func (ast *Node) ConvertToStack() ([]float64, []token.TokenType) {
+	if ast == nil {
+		return nil, nil
 	}
 
-	if node.Type == Number {
-		fmt.Println(node.Value)
-		return node.Value
+	var operands []float64
+	var operators []token.TokenType
+
+	if ast.Type == Number {
+		operands = append(operands, ast.Value)
+	} else if ast.Type == BinaryOperation {
+		leftOperands, leftOperators := ast.Left.ConvertToStack()
+		rightOperands, rightOperators := ast.Right.ConvertToStack()
+
+		operands = append(operands, leftOperands...)
+		operands = append(operands, rightOperands...)
+		operators = append(operators, leftOperators...)
+		operators = append(operators, rightOperators...)
+		operators = append(operators, ast.Operator)
 	}
 
-	// first process multiply adn divide
-	if node.Operator == token.Multiply || node.Operator == token.Divide {
-		leftValue := EvaluateASTWithPriority(node.Left)
-		rightValue := EvaluateASTWithPriority(node.Right)
+	return operands, operators
+}
 
-		fmt.Println(node.Operator)
-		switch node.Operator {
-		case token.Multiply:
-			return leftValue * rightValue
-		case token.Divide:
-			if rightValue == 0.0 {
-				// process division by zero error
-				fmt.Println("division by zero")
-				return 0.0
+func evaluateRPN(operands []float64, operators []token.TokenType) float64 {
+	stack := vm.Stack{}
+	for i := 0; i < len(operators); i++ {
+		if operators[i] == token.Plus || operators[i] == token.Minus || operators[i] == token.Multiply || operators[i] == token.Divide {
+			rightOperand := stack.Pop()
+			leftOperand := stack.Pop()
+			result := 0.0
+
+			switch operators[i] {
+			case token.Plus:
+				result = leftOperand + rightOperand
+			case token.Minus:
+				result = leftOperand - rightOperand
+			case token.Multiply:
+				result = leftOperand * rightOperand
+			case token.Divide:
+				if rightOperand == 0.0 {
+					// 处理除零错误
+					fmt.Println("除零错误")
+					return 0.0
+				}
+				result = leftOperand / rightOperand
 			}
-			return leftValue / rightValue
+
+			stack.Push(result)
+		} else {
+			stack.Push(operands[i])
 		}
 	}
 
-	// process plus and minus
-	if node.Operator == token.Plus || node.Operator == token.Minus {
-		leftValue := EvaluateASTWithPriority(node.Left)
-		rightValue := EvaluateASTWithPriority(node.Right)
-
-		fmt.Println(node.Operator)
-		switch node.Operator {
-		case token.Plus:
-			return leftValue + rightValue
-		case token.Minus:
-			return leftValue - rightValue
-		}
+	if len(operands) > len(operators) {
+		stack.Push(operands[len(operands)-1])
 	}
 
-	// 处理未知运算符
-	fmt.Println("未知运算符")
-	return 0.0
+	return stack.Pop()
 }

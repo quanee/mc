@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 
-	"mc/ast"
 	"mc/parser"
 )
 
@@ -22,6 +21,7 @@ func main() {
 	}
 
 	fmt.Printf("%#v", astree)
-	result := ast.EvaluateASTWithPriority(astree)
-	fmt.Printf("expression result: %f\n", result)
+	optnum, opts := astree.ConvertToStack()
+	fmt.Printf("expression result: %v\n", optnum)
+	fmt.Printf("expression result: %v\n", opts)
 }
