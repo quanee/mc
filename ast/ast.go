@@ -53,7 +53,7 @@ func (ast *Node) ConvertToStack() ([]float64, []token.TokenType) {
 	return operands, operators
 }
 
-func evaluateRPN(operands []float64, operators []token.TokenType) float64 {
+func EvaluateRPN(operands []float64, operators []token.TokenType) float64 {
 	stack := vm.Stack{}
 	for i := 0; i < len(operators); i++ {
 		if operators[i] == token.Plus || operators[i] == token.Minus || operators[i] == token.Multiply || operators[i] == token.Divide {
