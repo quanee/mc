@@ -12,6 +12,8 @@ const (
 	Minus
 	Multiply
 	Divide
+	Lparen // (
+	Rparen // )
 )
 
 // Token define
@@ -27,12 +29,16 @@ func (typ TokenType) String() string {
 	case Variable:
 		return "[Toke Type] Variable"
 	case Plus:
-		return "[Toke Type] Plus"
+		return "[Toke Type] Plus[+]"
 	case Minus:
-		return "[Toke Type] Minus"
+		return "[Toke Type] Minus[-]"
 	case Multiply:
-		return "[Toke Type] Multiply"
+		return "[Toke Type] Multiply[*]"
 	case Divide:
+		return "[Toke Type] Divide[/]"
+	case Lparen:
+		return "[Toke Type] Lparen[(]"
+	case Rparen:
 		return "[Toke Type] Divide"
 	default:
 		return fmt.Sprintf("unknow %d", typ)
