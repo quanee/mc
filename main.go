@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 
-	"mc/ast"
 	"mc/parser"
 )
 
@@ -22,9 +21,8 @@ func main() {
 	}
 
 	fmt.Printf("%#v", astree)
-	optnum, opts := astree.ConvertToStack()
-	fmt.Printf("expression result: %v\n", optnum)
-	fmt.Printf("expression result: %v\n", opts)
+	optnum := astree.ConvertToStack()
+	fmt.Printf("expression result: %#v\n", optnum)
 
-	fmt.Printf("expression result: %v\n", ast.EvaluateRPN(optnum, opts))
+	//fmt.Printf("expression result: %v\n", ast.EvaluateRPN(optnum))
 }

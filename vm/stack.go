@@ -23,6 +23,10 @@ func (s *Stack) Pop() float64 {
 	return value
 }
 
+func (s *Stack) Len() int {
+	return len(s.data)
+}
+
 func evaluateRPN(operands []float64, operators []token.TokenType) float64 {
 	stack := Stack{}
 	for i := 0; i < len(operators); i++ {

@@ -26,21 +26,21 @@ type Token struct {
 func (typ TokenType) String() string {
 	switch typ {
 	case Number:
-		return "[Toke Type] Number"
+		return "[Toke] Number"
 	case Variable:
-		return "[Toke Type] Variable"
+		return "[Toke] Variable"
 	case Plus:
-		return "[Toke Type] Plus[+]"
+		return "[Toke] Plus[+]"
 	case Minus:
-		return "[Toke Type] Minus[-]"
+		return "[Toke] Minus[-]"
 	case Multiply:
-		return "[Toke Type] Multiply[*]"
+		return "[Toke] Multiply[*]"
 	case Divide:
-		return "[Toke Type] Divide[/]"
+		return "[Toke] Divide[/]"
 	case Lparen:
-		return "[Toke Type] Lparen[(]"
+		return "[Toke] Lparen[(]"
 	case Rparen:
-		return "[Toke Type] Divide"
+		return "[Toke] Rparen[)]"
 	default:
 		return fmt.Sprintf("unknow %d", typ)
 	}
