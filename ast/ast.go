@@ -2,7 +2,6 @@ package ast
 
 import (
 	"mc/token"
-	"mc/vm"
 )
 
 // AST 节点类型
@@ -43,12 +42,4 @@ func (ast *Node) ConvertToStack() []*Node {
 
 	return append(leftRPN, rightRPN...)
 
-}
-
-func EvaluateRPN(operands []float64, operators []token.TokenType) float64 {
-	stack := vm.Stack{}
-
-	stack.Push(operands[0])
-
-	return stack.Pop()
 }

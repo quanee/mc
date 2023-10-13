@@ -6,14 +6,15 @@ import (
 )
 
 type Stack struct {
-	data []float64
+	data     []float64
+	operator []token.TokenType
 }
 
-func (s *Stack) Push(value float64) {
+func (s *Stack) PushData(value float64) {
 	s.data = append(s.data, value)
 }
 
-func (s *Stack) Pop() float64 {
+func (s *Stack) PopData() float64 {
 	if len(s.data) == 0 {
 		return 0.0 // 错误处理
 	}
@@ -31,8 +32,8 @@ func evaluateRPN(operands []float64, operators []token.TokenType) float64 {
 	stack := Stack{}
 	for i := 0; i < len(operators); i++ {
 		if operators[i] == token.Plus || operators[i] == token.Minus || operators[i] == token.Multiply || operators[i] == token.Divide {
-			rightOperand := stack.Pop()
-			leftOperand := stack.Pop()
+			rightOperand := stack.PopData()
+			leftOperand := stack.PopData()
 			result := 0.0
 
 			switch operators[i] {
@@ -51,13 +52,13 @@ func evaluateRPN(operands []float64, operators []token.TokenType) float64 {
 				result = leftOperand / rightOperand
 			}
 
-			stack.Push(result)
+			stack.PushData(result)
 		} else {
-			stack.Push(operands[i])
+			stack.PushData(operands[i])
 		}
 	}
 	if len(operands) > len(operators) {
-		stack.Push(operands[len(operands)-1])
+		stack.PushData(operands[len(operands)-1])
 	}
-	return stack.Pop()
+	return stack.PopData()
 }

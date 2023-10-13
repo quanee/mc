@@ -22,7 +22,9 @@ func main() {
 
 	fmt.Printf("%#v", astree)
 	optnum := astree.ConvertToStack()
-	fmt.Printf("expression result: %#v\n", optnum)
+	for _, opt := range optnum {
+		fmt.Printf("expression result: %#v\n", opt)
+	}
 
 	//fmt.Printf("expression result: %v\n", ast.EvaluateRPN(optnum))
 }
